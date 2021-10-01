@@ -3,7 +3,7 @@ package com.example;
 public abstract class AbstractSampleTypeClassifierHandler 
     implements ISampleTypeClassifierHandler {
 
-    private ISampleTypeClassifierHandler nextHandler;
+    protected ISampleTypeClassifierHandler nextHandler;
 
     public ISampleTypeClassifierHandler setNext(final ISampleTypeClassifierHandler aHandler) {
         this.nextHandler = aHandler;
