@@ -1,6 +1,6 @@
 package com.example;
 
-public abstract class AbstractSampleTypeClassifierHandler 
+public non-sealed abstract class AbstractSampleTypeClassifierHandler 
     implements ISampleTypeClassifierHandler {
 
     protected ISampleTypeClassifierHandler nextHandler;

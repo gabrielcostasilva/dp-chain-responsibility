@@ -1,34 +1,36 @@
-# Chain of Responsibility Design Pattern Example
-Although this project is not based on any particular tutorial, I mainly used the [Refactoring Guru](https://refactoring.guru/design-patterns/chain-of-responsibility/) explanation as reference when implementing the code.
+# Sealed Class - Non-Sealed Example
+This branch changes the [chain of responsibility DP example](https://github.com/gabrielcostasilva/dp-chain-responsibility.git) to show _sealed class_, a [new feature introduced in Java 17](https://openjdk.java.net/jeps/409).
+
+A _sealed class_ enables creating closed inheritance. In summary, it means that the superclass has a limited set of known subclasses. Venkat Subramaniam gives a [good introduction on sealed classes](https://www.youtube.com/watch?v=Xkh5sa3vjTE) if you are interested in knowing more about it.
+
+This project exemplifies the use of the `non-sealed` keyword whereas a [factory method branch](https://github.com/gabrielcostasilva/dp-factory-method/tree/sealed-class-example) shows the use of `sealed` and `final` combination.
 
 ## Project Overview
-The use case considers a `Sample` classification process. There are three `SampleType`'s, representing possible types of a `Sample`. The sample type discovery is done at runtime, according to the result of `Sample.getOccurrenceType()` method. 
+The only changes made in this code are those that introduced by the `sealed` and `permits` keywords. Whereas the former marks the class or interface as a _sealed class_, the latter declares the known subclasses. The code snippet below exemplifies their use.
 
-To identify the sample type, a `Sample` is sent to a chain of classes. Each class is a subclass of `AbstractSampleTypeClassifierHandler`, responsible for defining two methods: (i) `setNext(Handler)` that defines the next handler in the chain; and (ii) `classify(Sample): SampleType` that runs the `SampleType` classification.
+```java
+// (...)
 
-The `ClassifySampleType` class acts as a mediator, creating the _chain of reponsibility_ and submitting the `Sample` for evaluation. As result the class return a `SampleType` representing the sample type, or `null` in case of a `Sample` that does not fit in any `SampleType`. 
+public sealed interface ISampleTypeClassifierHandler 
+    permits AbstractSampleTypeClassifierHandler {
 
-## Class Structure
+   // (...)
+}
+```
 
-<img src="./pics/ClassDiagram.png" />
+In addition, the `non-sealed` keyword _closes_ the inheritance with the interface, but it keeps the abstract class open for extension.
 
-* `ISampleTypeClassifierHandler` sets the two basic behaviours for any handler;
+```java
+// (...)
 
-* `AbstractSampleTypeClassifierHandler` creates the base structure for all handlers. In particular, it creates an attribute (`nextHandler`), which holds the next handler in the chain. It also defines a standard behaviour for the `classify(Sample)`;
+public non-sealed abstract class AbstractSampleTypeClassifierHandler 
+    implements ISampleTypeClassifierHandler {
 
-* `SoyaPestSampleTypeClassifierHandler`, `SoyaDiseaseSampleTypeClassifierHandler`, and `SoyaPulverisationSampleTypeClassifierHandler` are handlers responsible for classifying a `Sample` into one of `SampleType`'s. In case of a new `SampleType`, one should: (i) extend an `AbstractSampleTypeClassifierHandler` class, representing the new `SampleType`; (ii) add a new entry into the `SampleType` `enum`; (iii) add the new concrete `AbstractSampleTypeClassifierHandler` into the chain of responsibility defined in the `ClassifySampleType`;
+   //  (...)
+}
+```
 
-* `ClassifySampleType` is a helper class. It acts as a mediator assembling the chain of responsibility and submitting the `Sample` to the chain;
-
-* `Sample` represents an entity that carries information enabling its identification as one of `SampleType`'s;
-
-* `SampleType` is a Java `enum` that defines a set of acceptable `Sample` types.
-
-## Flow Structure
-
-<img src="./pics/SequenceDiagram.png" />
-
-The Figure shows the test execution for `SampleType.SOYA_PEST` sample. The classification process starts when a `Sample` is submitted to `ClassifySampleType.classify(Sample)`. The `ClassifySampleType` sets the chain of responsiblity, defining the classification order (by the `setNext(Handler)`).
+A class extending a _sealed class_ must be `final`, `sealed` or `non-sealed`.
 
 ## Project Setup
 ```

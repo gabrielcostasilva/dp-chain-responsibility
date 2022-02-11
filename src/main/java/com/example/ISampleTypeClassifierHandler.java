@@ -1,6 +1,7 @@
 package com.example;
 
-public interface ISampleTypeClassifierHandler {
+public sealed interface ISampleTypeClassifierHandler 
+    permits AbstractSampleTypeClassifierHandler {
 
     public ISampleTypeClassifierHandler setNext(ISampleTypeClassifierHandler aHandler);
     public SampleType classify(Sample aSample);
